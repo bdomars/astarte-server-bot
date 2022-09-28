@@ -1,7 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  creationTimestamp: null
   labels:
     app: astartebot
   name: astartebot
@@ -14,7 +13,6 @@ spec:
   strategy: {}
   template:
     metadata:
-      creationTimestamp: null
       labels:
         app: astartebot
     spec:
@@ -22,4 +20,41 @@ spec:
       - image: ghcr.io/bdomars/astartebot
         name: astartebot
         resources: {}
-status: {}
+        ports:
+        - containerPort: 8080
+          name: webhook
+          protocol: TCP
+        envFrom:
+        - configMapRef:
+            name: astartebot
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: astartebot
+  namespace: astartebot
+spec:
+  ports:
+  - name: webhook
+    port: 8080
+    protocol: TCP
+  selector:
+    app: astartebot
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: astartebot
+  namespace: astartebot
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - kind: Rule
+    match: Host(`tghook.0xbd.fi`)
+    services:
+    - kind: Service
+      name: astartebot
+      port: 8080
+  tls:
+    certResolver: dns0xbd
