@@ -12,6 +12,8 @@ RUN go build -o /astartebot
 
 FROM alpine
 
+LABEL org.opencontainers.image.source https://github.com/bdomars/astarte-server-bot
+
 WORKDIR /
 COPY --from=build /astartebot /astartebot
 EXPOSE 8080

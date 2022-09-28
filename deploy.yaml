@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: astartebot
+  name: astartebot
+  namespace: astartebot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: astartebot
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: astartebot
+    spec:
+      containers:
+      - image: ghcr.io/bdomars/astartebot
+        name: astartebot
+        resources: {}
+status: {}
